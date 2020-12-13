@@ -23,8 +23,8 @@ THE SOFTWARE.
 
 ]]--
 
---Modified by FlamingArrow. (github.com/FlamingArr)
---Depends on and uses love.filesystem.newFile
+--Modified by FlamingArrow (github.com/FlamingArr).
+--Depends on and uses love.filesystem.newFile.
 --Uses love.math.random if avaliable.
 
 local newFile, rand
