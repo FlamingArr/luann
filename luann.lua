@@ -27,6 +27,7 @@ THE SOFTWARE.
 --Depends on and uses love.filesystem.newFile.
 --Uses love.math.random if avaliable.
 
+local load = load or loadstring
 local newFile, rand
 
 if type(love) == "table" then
