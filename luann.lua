@@ -23,14 +23,41 @@ THE SOFTWARE.
 
 ]]--
 
+--Modified by FlamingArrow. (github.com/FlamingArr)
+--Depends on and uses love.filesystem.newFile
+--Uses love.math.random if avaliable.
+
+local newFile, rand
+
+if type(love) == "table" then
+	if type(love.filesystem) == "table" then
+		if type(love.filesystem.newFile) == "function" then
+			newFile = love.filesystem.newFile
+		end
+	end
+end
+assert(newFile, "love.filesystem not avaliable")
+
+if type(love) == "table" then
+	if type(love.math) == "table" then
+		if type(love.math.random) == "function" then
+			rand = love.math.random
+		end
+	end
+end
+
+if not rand then
+	rand = math.random
+end
+
 --Borrowed table persistence from http://lua-users.org/wiki/TablePersistence, MIT license.
 --comments removed, condensed code to oneliners where possible.
 local write, writeIndent, writers, refCount;
-persistence =
+local persistence =
 {
 	store = function (path, ...)
-		local file, e = io.open(path, "w")
-		if not file then return error(e)	end
+		local file, e = newFile(path, "w")
+		if not file then error(e) end
 		local n = select("#", ...)
 		local objRefCount = {} -- Stores reference that will be exported
 		for i = 1, n do refCount(objRefCount, (select(i,...))) end
@@ -72,7 +99,9 @@ persistence =
 		file:close();
 	end;
 	load = function (path)
-		local f, e = loadfile(path);
+		local file, e = newFile(path)
+		assert(file, e)
+		local f, e = load(file:read())
 		if f then
 			return f();
 		else
@@ -168,7 +197,7 @@ local exp = math.exp
 function Cell:new(numInputs)
 	local cell = {delta = 0, weights = {}, signal = 0}
 		for i = 1, numInputs do
-			cell.weights[i] = math.random() * .1
+			cell.weights[i] = rand() * .1
 		end
 		setmetatable(cell, self)
 		self.__index = self
@@ -190,7 +219,7 @@ function Layer:new(numCells, numInputs)
 	numInputs = numInputs or 1
 	local cells = {}
 		for i = 1, numCells do cells[i] = Cell:new(numInputs) end
-		local layer = {cells = cells, bias = math.random()}
+		local layer = {cells = cells, bias = rand()}
 		setmetatable(layer, self)
 		self.__index = self
 	return layer
@@ -309,7 +338,7 @@ end
 function luann:loadTrainingDataFromFile(fileName)
 local trainingData = {}
 local fileLines = {}
-    local f = io.open(fileName, "rb")
+    local f = newFile(fileName, "r")
 		 for line in f:lines() do
 			table.insert (fileLines, line);
 		 end
