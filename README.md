@@ -1,6 +1,6 @@
 # Modifications
 * Uses `love.filesystem.newFile` instead of `io.open`.
-* Uses `love.math.random` if avaliable, otherwise falls back `to math.random`.
+* Uses `love.math.random` if avaliable, otherwise falls back to `math.random`.
 
 luann
 =====
